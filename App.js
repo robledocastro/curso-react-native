@@ -1,10 +1,39 @@
-import React, {useState} from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 
 export default function App(){
 
   const [nome, setNome] = useState('Robledo');
   const [input, setInput] = useState('');
+
+  //Component DidMount
+  useEffect(()=>{
+
+    async function getStorage(){  
+      const nomeStorage = await AsyncStorage.getItem('nomes');
+      if(nomeStorage !== null){
+        setNome(nomeStorage);
+      }
+    }
+
+    getStorage();
+
+    //return() => {};
+
+  }, [])
+
+
+  //Component DidUpdate
+  useEffect(()=>{
+
+    async function saveStorage(){
+      await AsyncStorage.setItem('nomes', nome)
+    }
+
+    saveStorage();
+
+  }, [nome])
 
   function alteraNome(){
     setNome(input);
