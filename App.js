@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo, useRef} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 
@@ -6,6 +6,7 @@ export default function App(){
 
   const [nome, setNome] = useState('Robledo');
   const [input, setInput] = useState('');
+  const nomeInput = useRef(null);
 
   //Component DidMount
   useEffect(()=>{
@@ -40,19 +41,37 @@ export default function App(){
     setInput('');
   }
 
+  function novoNome(){
+    nomeInput.current.focus();
+  }
+
+  const letrasNome = useMemo(()=> {
+    console.log('Mudou letra');
+    return nome.length;
+  }, [nome]);
+  
+
   return(
     <View style={styles.container}>
       
       <TextInput 
-        placeholder='Seu nome...'
+        placeholder='Seu nome ...'
         value={input}
         onChangeText={(texto)=> setInput(texto) }
+        ref={nomeInput}
       />
       <TouchableOpacity style={styles.btn} onPress={alteraNome}>
         <Text style={styles.btnText}>Alterar Nome</Text>
       </TouchableOpacity>
 
       <Text style={styles.texto}>{nome}</Text>
+
+      <Text style={styles.texto}> Tem {letrasNome} letras</Text>
+
+      <TouchableOpacity style={styles.btn} onPress={novoNome}>
+        <Text style={styles.btnText}>Novo nome</Text>
+      </TouchableOpacity>
+
     </View>
   );
 }
