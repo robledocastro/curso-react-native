@@ -1,95 +1,49 @@
-import React, {useState, useEffect, useMemo, useRef} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
+import React, { useEffect, useState} from 'react';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+
+import api from './android/app/src/services/api';
+import Filmes from './android/app/src/Filmes';
 
 export default function App(){
+  const [filmes, setFilmes] = useState([]);
+  const [loading,setLoading] = useState(true);
 
-  const [nome, setNome] = useState('Robledo');
-  const [input, setInput] = useState('');
-  const nomeInput = useRef(null);
-
-  //Component DidMount
-  useEffect(()=>{
-
-    async function getStorage(){  
-      const nomeStorage = await AsyncStorage.getItem('nomes');
-      if(nomeStorage !== null){
-        setNome(nomeStorage);
-      }
+  useEffect(()=> {
+    
+    async function loadFilmes() {
+      const response = await api.get('r-api/?api=filmes');
+      setFilmes(response.data);
+      setLoading(false);
     }
 
-    getStorage();
+    loadFilmes();
 
-    //return() => {};
+  }, []);
 
-  }, [])
+  if(loading){
+    return(
+      <View style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+        <ActivityIndicator color="#121212" size={43}/>
+      </View>
+    )
+  }else{
+    return(
+      <View style={styles.container}>
 
-
-  //Component DidUpdate
-  useEffect(()=>{
-
-    async function saveStorage(){
-      await AsyncStorage.setItem('nomes', nome)
-    }
-
-    saveStorage();
-
-  }, [nome])
-
-  function alteraNome(){
-    setNome(input);
-    setInput('');
-  }
-
-  function novoNome(){
-    nomeInput.current.focus();
-  }
-
-  const letrasNome = useMemo(()=> {
-    console.log('Mudou letra');
-    return nome.length;
-  }, [nome]);
-  
-
-  return(
-    <View style={styles.container}>
-      
-      <TextInput 
-        placeholder='Seu nome ...'
-        value={input}
-        onChangeText={(texto)=> setInput(texto) }
-        ref={nomeInput}
+      <FlatList 
+        data={filmes}
+        keyExtractor={ item => String(item.id) }
+        renderItem={ ({ item }) => <Filmes data={item} /> }
       />
-      <TouchableOpacity style={styles.btn} onPress={alteraNome}>
-        <Text style={styles.btnText}>Alterar Nome</Text>
-      </TouchableOpacity>
 
-      <Text style={styles.texto}>{nome}</Text>
 
-      <Text style={styles.texto}> Tem {letrasNome} letras</Text>
-
-      <TouchableOpacity style={styles.btn} onPress={novoNome}>
-        <Text style={styles.btnText}>Novo nome</Text>
-      </TouchableOpacity>
-
-    </View>
-  );
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container:{
-    flex: 1,
-    marginTop: 15
-  },
-  texto:{
-    color: '#000',
-    fontSize: 35
-  },
-  btn:{
-    backgroundColor: '#000',
-    alignItems: 'center'
-  },
-  btnText:{
-    color: '#FFF'
+    flex: 1
   }
 });
