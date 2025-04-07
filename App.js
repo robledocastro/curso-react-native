@@ -1,79 +1,47 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, SafeAreaView, Keyboard } from 'react-native';
-import { api } from './src/services/api';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 export default function App(){
-  const [cep, setCep] = useState('');
-  const inputRef = useRef(null);
-  const [cepUser, setCepUser] = useState(null);
+  const [contador, setContador] = useState(0);
+  const [disableButton, setDisableButton] = useState(false);
 
-  function limpar(){
-    setCep('');
-    setCepUser(null);
-    inputRef.current.focus();
+  function adicionar(){
+    if(contador < 10){
+      setContador(contador+1);
+      if(contador == 10)
+        setDisableButton(true);
+    }
   }
 
-  async function buscar(){
-    if(cep == ''){
-      alert('Digite um CEP válido.');
-      setCep('');
-      return;
-    }
-
-    try{
-      const response = await api.get(`/${cep}/json`);
-      console.log(response.data);
-      setCepUser(response.data);
-
-      Keyboard.dismiss();
-    }catch(error){
-      console.log('ERROR: ' + error);
-    }
-    
+  function remover(){
+    if(contador > 0)
+      setContador(contador-1);
   }
 
   return(
   
-  <SafeAreaView style={styles.container}>
-    <View style={{alignItems: 'center'}}>
-      <Text style={styles.text}>Digite o CEP desejado</Text>
-      <TextInput 
-        style={styles.input}
-        placeholder='Ex: 96200000'
-        value={cep}
-        onChangeText={ (texto) => setCep(texto) }
-        keyboardType='numeric'
-        ref={inputRef}
-      />
-    </View>
-    
-    <View style={styles.areaBtn}>
-      <TouchableOpacity 
-        style={[styles.botao, { backgroundColor: '#1d75cd' }]}
-        onPress={buscar}
-      >
-        <Text style={styles.botaoText}>Buscar</Text>
-      </TouchableOpacity>
+  <View style={styles.container}>
 
-      <TouchableOpacity 
-        style={[styles.botao, { backgroundColor: '#cd3e1d' }]}
-        onPress={limpar}
-      >
-        <Text style={styles.botaoText}>Limpar</Text>
-      </TouchableOpacity>
+    <Text style={styles.text}>Pessoas no restaurante:</Text>
+    <View style={styles.areContador}>
+      <Text style={styles.contador}>{contador}</Text>
     </View>
-
-    { cepUser &&
-      <View style={styles.resultado}>
-        <Text style={styles.itemText}>CEP: {cepUser.cep}</Text>
-        <Text style={styles.itemText}>Logradouro: {cepUser.logradouro}</Text>
-        <Text style={styles.itemText}>Bairro: {cepUser.bairro}</Text>
-        <Text style={styles.itemText}>Cidade: {cepUser.localidade}</Text>
-        <Text style={styles.itemText}>Estado: {cepUser.uf}</Text>
+    { contador >= 10 &&
+      <View style={styles.areaMsgLimite}>
+        <Text style={styles.msgLimite}>Restaurante no seu limite de pessoas</Text>
       </View>
     }
+    <View style={styles.areaBtn}>
+      <TouchableOpacity style={styles.botao} onPress={adicionar} disabled={disableButton} activeOpacity={false}>
+        <Text style={styles.botaoText}>Adicionar</Text>
+      </TouchableOpacity>
 
-  </SafeAreaView>
+      <TouchableOpacity style={styles.botao} onPress={remover}>
+        <Text style={styles.botaoText}>Remover</Text>
+      </TouchableOpacity>
+    </View>
+
+  </View>
 
   );
 }
@@ -81,45 +49,52 @@ export default function App(){
 const styles = StyleSheet.create({
   container:{
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   text:{
-    marginTop: 25,
-    marginBottom: 15,
-    fontSize: 25,
-    fontWeight: 'bold'
+    fontSize: 18,
+    marginBottom: 20
   },
-  input:{
-    backgroundColor: '#FFF',
-    borderWidth: 1,
-    borderColor: '#DDD',
-    borderRadius: 5,
-    width: '90%',
-    padding: 10,
-    fontSize: 18
+  areContador:{
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000',
+    height: 70,
+    width: 50,
+    borderRadius: 5
+  },
+  contador:{
+    color: '#FFF',
+    fontSize: 30,
+    fontWeight: '500',
+  },
+  areaMsgLimite:{
+    backgroundColor: '#d69d00',
+    marginTop: 20,
+    marginBottom: -10
+  },
+  msgLimite:{
+    padding: 5
   },
   areaBtn:{
     alignItems: 'center',
     flexDirection: 'row',
     marginTop: 15,
-    justifyContent: 'space-around'
+    justifyContent: 'center'
   },
   botao:{
-    height: 55,
+    height: 35,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
-    borderRadius: 5
+    padding: 8,
+    borderRadius: 5,
+    margin: 10,
+    backgroundColor: '#007bff'
   },
   botaoText:{
-    fontSize: 18,
+    fontSize: 15,
     color: '#FFF'
   },
-  resultado:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  itemText:{
-    fontSize: 20
-  }
+
 });
