@@ -15,7 +15,8 @@
     "@react-native-picker/picker": "^2.11.0",
     "axios": "^1.8.4",
     "react": "19.0.0",
-    "react-native": "0.78.1"
+    "react-native": "0.78.1",
+    "react-native-animatable": "^1.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

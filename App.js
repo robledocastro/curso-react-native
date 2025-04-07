@@ -1,56 +1,36 @@
-import React, { useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import React, { useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+
+import * as Animatable from 'react-native-animatable';
+
+const ButtonAnimated = Animatable.createAnimatableComponent(TouchableOpacity);
 
 export default function App(){
-  const widthAnimada = useRef(new Animated.Value(0)).current;
-  const heightAnimada = useRef(new Animated.Value(5)).current;
-  const opacidadeAnimada = useRef(new Animated.Value(1)).current;
 
-  useEffect(()=> {
-    
-    Animated.sequence([
-      Animated.timing(widthAnimada, {
-        toValue: 100,
-        duration: 4000,
-        useNativeDriver: false
-      }),
-      Animated.timing(heightAnimada, {
-        toValue: 100,
-        duration: 4000,
-        useNativeDriver: false
-      })
-    ]).start( () => {
-      alert("Animação concluída!");
-    });
+  const buttonRef = useRef(null);
 
-  }, []);
-
-  let porcentagemLargura = widthAnimada.interpolate({
-    inputRange: [0, 100],
-    outputRange: ['0%', '100%']
-  });
-
-  let porcentagemALtura = heightAnimada.interpolate({
-    inputRange: [5, 100],
-    outputRange: ['5%', '100%']
-  });
+  function handleClick(){
+    buttonRef.current.shake();
+  }
 
   return(
-
-  
   <View style={styles.container}>
 
-    <Animated.View
-      style={{
-        width: porcentagemLargura,
-        height: porcentagemALtura,
-        backgroundColor: '#4169e1',
-        justifyContent: 'center',
-        opacity: opacidadeAnimada
-      }}
+      <Animatable.Text 
+        style={styles.text}
+        animation="shake"
+      >
+        Textinho
+      </Animatable.Text>
+  
+    <ButtonAnimated 
+      style={styles.button} 
+      animation="pulse" 
+      ref={buttonRef}
+      onPress={handleClick}
     >
-      <Text style={styles.text}>Carregando...</Text>
-    </Animated.View>
+      <Text style={styles.textButton}>Animar</Text>
+    </ButtonAnimated>
 
   </View>
 
@@ -64,9 +44,17 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   text:{
-    fontSize: 22,
-    textAlign: 'center',
-    color: '#FFF',
-
+    fontSize: 25,
+  },
+  button:{
+    width: '78%',
+    height: 30,
+    backgroundColor: '#121212',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 25
+  },
+  textButton:{
+    color: '#FFF'
   }
 });
