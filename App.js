@@ -1,36 +1,25 @@
 import React, { useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
-import * as Animatable from 'react-native-animatable';
-
-const ButtonAnimated = Animatable.createAnimatableComponent(TouchableOpacity);
+import Feather from '@react-native-vector-icons/feather';
+import Fontawesome6 from '@react-native-vector-icons/fontawesome6';
 
 export default function App(){
 
-  const buttonRef = useRef(null);
-
-  function handleClick(){
-    buttonRef.current.shake();
-  }
-
   return(
   <View style={styles.container}>
+    
+    <Feather 
+      name='umbrella'
+      size={45}
+      color="#FF0000"
+    />
 
-      <Animatable.Text 
-        style={styles.text}
-        animation="shake"
-      >
-        Textinho
-      </Animatable.Text>
-  
-    <ButtonAnimated 
-      style={styles.button} 
-      animation="pulse" 
-      ref={buttonRef}
-      onPress={handleClick}
-    >
-      <Text style={styles.textButton}>Animar</Text>
-    </ButtonAnimated>
+    <Fontawesome6 
+      name='user'
+      size={45}
+      color="green"
+    />
 
   </View>
 
@@ -42,19 +31,5 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-  },
-  text:{
-    fontSize: 25,
-  },
-  button:{
-    width: '78%',
-    height: 30,
-    backgroundColor: '#121212',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 25
-  },
-  textButton:{
-    color: '#FFF'
   }
 });
