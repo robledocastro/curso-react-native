@@ -1,35 +1,34 @@
-import React, { useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import React from 'react';
 
-import Feather from '@react-native-vector-icons/feather';
-import Fontawesome6 from '@react-native-vector-icons/fontawesome6';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import Home from './src/pages/Home';
+import Sobre from './src/pages/Sobre';
+import Contato from './src/pages/Contato';
+
+const Stack = createNativeStackNavigator();
 
 export default function App(){
-
   return(
-  <View style={styles.container}>
-    
-    <Feather 
-      name='umbrella'
-      size={45}
-      color="#FF0000"
-    />
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen 
+          name="Home" 
+          component={Home}
+          options={{
+            title: 'Tela inicio',
+            headerStyle:{
+              backgroundColor: '#121212'
+            },
+            headerTintColor: '#FFF',
+            headerShown: false
+          }}
+        />
 
-    <Fontawesome6 
-      name='user'
-      size={45}
-      color="green"
-    />
-
-  </View>
-
-  );
+        <Stack.Screen name="Sobre" component={Sobre}/>
+        <Stack.Screen name="Contato" component={Contato}/>
+      </Stack.Navigator>
+    </NavigationContainer>
+  )
 }
-
-const styles = StyleSheet.create({
-  container:{
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-});
